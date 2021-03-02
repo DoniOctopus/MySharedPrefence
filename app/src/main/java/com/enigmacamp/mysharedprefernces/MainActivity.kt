@@ -1,56 +1,63 @@
 package com.enigmacamp.mysharedprefernces
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.enigmacamp.mysharedprefernces.helper.Constant
+import com.enigmacamp.mysharedprefernces.helper.PrefrencesHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var prefHelper: PrefrencesHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    }
-    fun btnSave(v : View?) {
-        if (v == btn_save){
-            val sharedPreference:SharedPreference=SharedPreference(this)
-            val name=edt_name.editableText.toString()
-            val email=edt_email.editableText.toString()
-            sharedPreference.save("name",name)
-            sharedPreference.save("email",email)
-            Toast.makeText(this@MainActivity,"Data Stored",Toast.LENGTH_SHORT).show()
-        }
-        val show = edt_name.text
-        val show1 = edt_email.text
-        val result = ("${show} ${show1}")
-        showSharedPref.text = result
-    }
 
-    fun btnRetrive(v : View){
-        val sharedPreference:SharedPreference=SharedPreference(this)
-        if (v == btn_retriev){
-            if (sharedPreference.getValueString("name")!=null) {
-                edt_name.hint = sharedPreference.getValueString("name")!!
-                Toast.makeText(this@MainActivity,"Data Retrieved",Toast.LENGTH_SHORT).show()
-            }else{
-                edt_name.hint="NO value found"
-            }
-            if (sharedPreference.getValueString("email")!=null) {
-                edt_email.hint = sharedPreference.getValueString("email")!!
-            }else{
-                edt_email.hint="No value found"
+        prefHelper = PrefrencesHelper(this)
+
+        buttonLogin.setOnClickListener {
+            //validasi sederhana
+            if (editUsername.text.isNotEmpty() && editPassword.text.isNotEmpty()) {
+                //jika username dan password tidak kosong,maka isisnya akan disimpan pada sharedPref
+                saveSession( editUsername.text.toString(), editPassword.text.toString() )
+                showMessage( "Berhasil login" )
+                moveIntent()
             }
         }
     }
 
-    fun btnClear(v:View?) {
-        val sharedPreference:SharedPreference=SharedPreference(this)
-        if(v == btn_clear){
-            sharedPreference.clearSharedPreference()
-            Toast.makeText(this@MainActivity,"Data Cleared",Toast.LENGTH_SHORT).show()
+    //digunakan untuk melakukan pengecekan
+    override fun onStart() {
+        super.onStart()
+        //mengambil nilai true atau false ,dan keynya adala PREF_IS_LOGIN yang kita ambil dari class Constant
+        if (prefHelper.getBoolean( Constant.PREF_IS_LOGIN )) {
+            //jika dia bernilai true dia akan start activity
+            moveIntent()
         }
     }
+
+    private fun moveIntent(){
+        startActivity(Intent(this, UserActivity::class.java))
+        //menutup
+        finish()
+    }
+
+    private fun saveSession(username: String, password: String){
+        //Menyimpan data
+        prefHelper.put( Constant.PREF_USERNAME, username )
+        prefHelper.put( Constant.PREF_PASSWORD, password )
+        prefHelper.put( Constant.PREF_IS_LOGIN, true)
+    }
+
+    private fun showMessage(message: String) {
+        //notif
+        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+    }
+
 }
