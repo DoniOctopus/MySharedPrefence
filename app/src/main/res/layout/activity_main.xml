@@ -1,62 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_margin="12dp"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ConstraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/edt_name"
-        android:layout_margin="6dp"
-        android:hint="Name"
-        android:layout_width="match_parent"
+
+    <Button
+        android:id="@+id/button_browse"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-        />
-    <EditText
-        android:id="@+id/edt_email"
-        android:layout_margin="6dp"
-        android:hint="Email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        />
-
-    <TextView
-        android:id="@+id/showSharedPref"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
-    <LinearLayout
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_weight="1"
-            android:text="Save"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:onClick="btnSave"
-            tools:ignore="OnClick" />
-        <Button
-            android:id="@+id/btn_retriev"
-            android:layout_weight="1"
-            android:text="Retrieve"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:onClick="btnRetrive"
-            tools:ignore="OnClick" />
-        <Button
-            android:id="@+id/btn_clear"
-            android:layout_weight="1"
-            android:text="Clear"
-            android:layout_width="0dp"
-            android:onClick="btnClear"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="213dp"
+        android:layout_height="243dp"
+        android:layout_marginTop="124dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+</androidx.constraintlayout.widget.ConstraintLayout>
