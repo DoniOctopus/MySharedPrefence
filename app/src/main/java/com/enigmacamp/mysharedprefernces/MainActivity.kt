@@ -6,17 +6,25 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity(),View.OnClickListener {
 
     val BROWSE_REQUEST_CODE = 777
     private val CAMERA_REQUEST_CODE = 1888
+    lateinit var photo : File
+    lateinit var currentPath : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,14 +34,41 @@ class MainActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (v == button_browse){
+            browseImage()
+        }else{
+            dispatcherCamera()
+        }
+    }
+
+    //untuk menggabil Image dari gallery
+    fun browseImage(){
         val browserIntent = Intent(Intent.ACTION_PICK)
         browserIntent.type = "image/*"
-        if (v == button_browse){
-            startActivityForResult(browserIntent, BROWSE_REQUEST_CODE)
-        }else{
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE)
-        }
+        startActivityForResult(browserIntent, BROWSE_REQUEST_CODE)
+    }
+
+    //menggambil image menggunakan camera
+    fun dispatcherCamera(){
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        //buat temporary filenya
+        photo = createTempImageFile()
+        //pakai Uri agar bisa memakai si temporary filenya
+        val photoUri = FileProvider.getUriForFile(this,"com.enigmacamp.mysharedprefernces.fileprovider",photo)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri)
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE)
+    }
+
+    fun createTempImageFile(): File {
+        //format tanggal dan waktu untuk detail kapan image dibuat atau diambil
+        val timeFileName : String = SimpleDateFormat("yyyMMddHHmmss").format(Date())
+        //bila tidak memakai Envirohment maka hanya sebatas -> getExternalDir /Android/com.enimga.xxxx
+        //bila memakai Envirohment -> getExternalDir /Android/com/enigma.xxxx/files/Picture
+        val storageDir : File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        //jenis file yang akan kita buat adalah image dengan typenya .jpg
+        val filenya = File.createTempFile("GAMBAR${timeFileName}",".jpg",storageDir)
+        currentPath = filenya.absolutePath
+        return filenya
     }
 
     //isi dari ini adalah menagkap balikan dari activtyForResultnya
@@ -48,8 +83,8 @@ class MainActivity : AppCompatActivity(),View.OnClickListener {
             imageView.setImageURI(resultURI)
         }
         if(requestCode.equals(CAMERA_REQUEST_CODE)){
-            val photo: Bitmap = data?.extras?.get("data") as Bitmap
-            imageView.setImageBitmap(photo)
+//            val photo: Bitmap = data?.extras?.get("data") as Bitmap
+//            imageView.setImageBitmap(photo)
              }
          }
 
