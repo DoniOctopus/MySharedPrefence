@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
@@ -85,6 +86,8 @@ class MainActivity : AppCompatActivity(),View.OnClickListener {
         if(requestCode.equals(CAMERA_REQUEST_CODE)){
 //            val photo: Bitmap = data?.extras?.get("data") as Bitmap
 //            imageView.setImageBitmap(photo)
+            val imagaeBitmap = BitmapFactory.decodeFile(photo.absolutePath)
+            imageView.setImageBitmap(imagaeBitmap)
              }
          }
 
